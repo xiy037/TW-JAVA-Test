@@ -19,6 +19,10 @@ public class Car {
     this.ticket = t;
   }
 
+  public void usedTicket() {
+    this.ticket = null;
+  }
+
   @Override
   public String toString() {
     return "Car{" +

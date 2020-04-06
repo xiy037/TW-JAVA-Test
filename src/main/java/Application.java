@@ -1,3 +1,6 @@
+import entity.Car;
+import entity.Ticket;
+
 import java.util.Scanner;
 
 public class Application {
@@ -46,7 +49,16 @@ public class Application {
   }
 
   public static String park(String carNumber) {
-    return "";
+    Car newCar = new Car(carNumber);
+    ParkRepository parkRepo = new ParkRepository();
+    parkRepo.produceTicketForCar(newCar);
+    Ticket ticket = newCar.getTicket();
+    if (ticket == null) {
+      return "";
+    } else {
+      return ticket.toString();
+    }
+
   }
 
   public static String fetch(String ticket) {
