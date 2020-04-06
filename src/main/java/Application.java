@@ -1,9 +1,12 @@
 import entity.Car;
 import entity.Ticket;
+import exception.InvalidTicketException;
+import exception.ParkingLotFullException;
 
 import java.util.Scanner;
 
 public class Application {
+  private static ParkRepository parkRepo = new ParkRepository();
 
   public static void main(String[] args) {
     operateParking();
@@ -16,10 +19,21 @@ public class Application {
       String choice = printItem.next();
       if (choice.equals("4")) {
         System.out.println("系统已退出");
+        quit();
         break;
       }
-      handle(choice);
+      try {
+        handle(choice);
+      } catch (InvalidTicketException | ParkingLotFullException e) {
+        System.out.println(e.getMessage());
+        break;
+      }
+
     }
+  }
+
+  private static void quit() {
+    parkRepo.exit();
   }
 
   private static void handle(String choice) {
@@ -50,7 +64,6 @@ public class Application {
 
   public static String park(String carNumber) {
     Car newCar = new Car(carNumber);
-    ParkRepository parkRepo = new ParkRepository();
     parkRepo.produceTicketForCar(newCar);
     Ticket ticket = newCar.getTicket();
     if (ticket == null) {
@@ -62,7 +75,16 @@ public class Application {
   }
 
   public static String fetch(String ticket) {
-    return "";
+    String[] ticketInfo = ticket.split(",");
+    String lot = ticketInfo[0];
+    int id = Integer.parseInt(ticketInfo[1]);
+    String plate = ticketInfo[2];
+    if (parkRepo.isTicketValid(lot, id, plate)) {
+      parkRepo.removeCarByTicket(lot, id);
+    } else {
+      throw new InvalidTicketException();
+    }
+    return plate;
   }
 
 }

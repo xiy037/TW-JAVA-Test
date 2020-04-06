@@ -82,7 +82,8 @@ public class DataUtil {
     }
   }
 
-  public void deleteData(String table , int position) {
+  public void deleteData(String lotName , int position) {
+    String table = getTableName(lotName);
     String sql = String.format("DELETE FROM %s WHERE id = ?", table);
     try (PreparedStatement stmt = this.connection.prepareStatement(sql)) {
       stmt.setInt(1, position);
@@ -135,8 +136,8 @@ public class DataUtil {
     String result = con.queryData("parking_lot_A", 1);
     System.out.println(result);
 //    con.insertData("A", 2, "A001");
-    con.deleteData("parking_lot_A", 3);
-    con.setSize("B", 9);
+//    con.deleteData("A", 3);
+    con.setSize("B", 2);
     System.out.println("parkinglotB size is " + con.getSize("B"));
     System.out.println(con.queryAll("A"));
     con.closeConnection();

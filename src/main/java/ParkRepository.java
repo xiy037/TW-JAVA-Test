@@ -1,16 +1,16 @@
 import entity.Car;
 import entity.ParkingLot;
 import entity.Ticket;
+import exception.ParkingLotFullException;
 
+import java.util.Arrays;
 import java.util.List;
 
 public class ParkRepository {
   private DataUtil util;
-  /**
-   *  set default parkingLot size;
-   */
   private ParkingLot lotA;
   private ParkingLot lotB;
+  private static final String[] ALLPARKS = {"A", "B"};
 
   public ParkRepository() {
     util = new DataUtil();
@@ -45,6 +45,37 @@ public class ParkRepository {
     Ticket ticket = newCar.getTicket();
     if (ticket != null) {
       util.insertData(ticket.getLot(), ticket.getPosition(), ticket.getCarPlate());
+    } else {
+      throw new ParkingLotFullException();
+    }
+  }
+
+
+  public void exit() {
+    util.closeConnection();
+  }
+
+  public void removeCarByTicket(String lot, int id) {
+    switch (lot) {
+      case "A":
+        lotA.removeCar(id);
+        break;
+      case "B":
+        lotB.removeCar(id);
+        break;
+    }
+    util.deleteData(lot, id);
+  }
+
+  public boolean isTicketValid(String lot, int position, String plate) {
+   ParkingLot customLot = lot.equals("A") ? lotA : lotB;
+    if (!Arrays.asList(ALLPARKS).contains(lot)) {
+      return false;
+    } else if ( position > customLot.getSize()) {
+      return false;
+    } else {
+      String foundPlate = customLot.getAllLots()[position - 1].getCarPlate();
+      return foundPlate.equals(plate);
     }
   }
 }
