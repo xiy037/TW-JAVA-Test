@@ -1,6 +1,7 @@
 import entity.Car;
 import entity.ParkingLot;
 import entity.Ticket;
+import exception.InvalidTicketException;
 import exception.ParkingLotFullException;
 
 import java.util.Arrays;
@@ -26,6 +27,8 @@ public class ParkRepository {
   //用于init的constructor，给新的size
   public ParkRepository(int numA, int numB) {
     util = new DataUtil();
+    util.truncateAllData("A");
+    util.truncateAllData("B");
     lotA = new ParkingLot("A", numA);
     lotB = new ParkingLot("B", numB);
     util.setSize("A", numA);
@@ -74,8 +77,13 @@ public class ParkRepository {
     } else if ( position > customLot.getSize()) {
       return false;
     } else {
-      String foundPlate = customLot.getAllLots()[position - 1].getCarPlate();
-      return foundPlate.equals(plate);
+      try {
+        String foundPlate = customLot.getAllLots()[position - 1].getCarPlate();
+        return foundPlate.equals(plate);
+      } catch (Exception e) {
+        return false;
+      }
+
     }
   }
 }

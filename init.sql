@@ -1,3 +1,4 @@
+SET SQL_SAFE_UPDATES = 0;
 DROP DATABASE IF EXISTS `parkingLots`;
 CREATE DATABASE `parkingLots`; 
 USE `parkingLots`;

@@ -59,7 +59,10 @@ public class Application {
   }
 
   public static void init(String initInfo) {
-
+    String[] initInfoArr = initInfo.split(",");
+    int numA = Integer.parseInt(initInfoArr[0].split(":")[1]);
+    int numB = Integer.parseInt(initInfoArr[1].split(":")[1]);
+    parkRepo = new ParkRepository(numA, numB);
   }
 
   public static String park(String carNumber) {
