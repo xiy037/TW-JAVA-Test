@@ -34,6 +34,7 @@ public class ParkRepository {
     util = new DataUtil();
     lotList = new ArrayList<>();
     for (int i = 0; i < ALLPARKS.length; i++) {
+      //这里是默认hashMap初始化所有的停车场大小。否则要加if(num.get(lotName) != null)的判断，不是null则新给size。是null的时候取DB里的原始数据作为size。
       String lotName = ALLPARKS[i];
       int newSize = nums.get(lotName);
       util.truncateAll(lotName);
@@ -44,6 +45,7 @@ public class ParkRepository {
 
 
   public void produceTicketForCar(Car newCar) {
+    //lotList的顺序生成的时候就是ABC的unicode顺序（参考ALLPARKS的顺序），如果需要改变顺序，则先深拷贝，再排序，再遍历，不要改变原来的List
     for (ParkingLot parkingLot : lotList) {
       if (!parkingLot.isFull()) {
         parkingLot.produceTicket(newCar);
@@ -58,6 +60,7 @@ public class ParkRepository {
     }
   }
 
+  //这里因为lotList和ALLPARKS是一一对应，所以可以根据相同index这么找，否则得遍历lotList里每一项parkingLot的name。
   private ParkingLot findLot(String lot) {
     ParkingLot customLot = null;
     for (int i = 0; i < ALLPARKS.length; i++) {
@@ -87,7 +90,7 @@ public class ParkRepository {
 
   public void removeCarByTicket(String lot, int id) {
     ParkingLot singleLot = findLot(lot);
-    singleLot.removeCar(id);
+    singleLot.removeCarByPosition(id);
     util.deleteData(lot, id);
   }
 

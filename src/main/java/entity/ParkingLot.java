@@ -71,7 +71,8 @@ public class ParkingLot {
     car.setTicket(newTicket);
   }
 
-  public void removeCar(int position) {
+  public void removeCarByPosition(int position) {
     lots[position - 1] = null;
   }
+
 }
