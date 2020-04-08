@@ -1,6 +1,5 @@
 package entity;
 
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
@@ -17,6 +16,13 @@ public class ParkingLot {
     this.lots = arrA;
   }
 
+  /**
+   * constructor for parkingLot when it has leftover cars, i.e. not init application.
+   *
+   * @param n          parkingLot name, should be "A" or "B" in this case.
+   * @param a          size for the parkingLot
+   * @param carTickets List representing leftover cars
+   */
   public ParkingLot(String n, int a, List<Ticket> carTickets) {
     Ticket[] arrA = new Ticket[a];
     for (int i = 0; i < carTickets.size(); i++) {
@@ -29,34 +35,32 @@ public class ParkingLot {
     this.lots = arrA;
   }
 
-
-
   public String getName() {
     return name;
   }
 
-  public int getSize() {return size;}
+  public int getSize() {
+    return size;
+  }
 
   public Ticket[] getAllLots() {
     return lots;
   }
 
-  public void removeCar(int position) {
-    lots[position - 1] = null;
-  }
-
   public boolean isFull() {
-   if (!Arrays.asList(lots).contains(null)) {
-     isFull = true;
-   }
+    if (!Arrays.asList(lots).contains(null)) {
+      isFull = true;
+    }
     return isFull;
   }
 
+  /**
+   * parking position for the car in the parking lot is associated with lots array index: position = index + 1
+   *
+   * @param car parkingLot produces a ticket for car, car provides the plate number and will be setTicket if got ticket.
+   */
   public void produceTicket(Car car) {
     Ticket newTicket = null;
-//    if (this.isFull()) {
-//      return newTicket;
-//    } else {
     for (int i = 0; i < lots.length; i++) {
       if (lots[i] == null) {
         newTicket = new Ticket(name, (i + 1), car);
@@ -65,35 +69,9 @@ public class ParkingLot {
       }
     }
     car.setTicket(newTicket);
-//  }
   }
 
-  public static void main(String[] args) {
-    ParkingLot lots = new ParkingLot("A", 5);
-    Ticket[] one = lots.getAllLots();
-    String park = lots.getName();
-    Car myCar = new Car("A123");
-    lots.produceTicket(new Car("D001"));
-    lots.produceTicket(new Car("B456"));
-    lots.produceTicket(new Car("C124"));
-    lots.produceTicket(myCar);
-    lots.removeCar(2);
-    System.out.println("my car's ticket: " + myCar.getTicket());
-    for (int i = 0; i < one.length; i++) {
-      System.out.println("in " + park + ": " + one[i]);
-    }
-    System.out.println("=======================");
-
-    List<Ticket> another = new ArrayList<>();
-    for (Ticket i : one) {
-      if (i != null) {
-        another.add(i);
-      }
-    }
-    ParkingLot lots2 = new ParkingLot("B", 6, another);
-    Ticket[] two = lots2.getAllLots();
-    for (int i = 0; i < two.length; i++) {
-      System.out.println("in " + lots2.getName()+ ": " + two[i]);
-    }
+  public void removeCar(int position) {
+    lots[position - 1] = null;
   }
 }

@@ -29,7 +29,7 @@ public class DataUtil {
     String sql = String.format("SELECT * FROM %s", tableName);
     try (PreparedStatement stmt = this.connection.prepareStatement(sql)) {
       ResultSet rs = stmt.executeQuery();
-      while(rs.next()) {
+      while (rs.next()) {
         Car oneCar = new Car(rs.getString("plate"));
         result.add(new Ticket(lotName, rs.getInt("id"), oneCar));
       }
@@ -45,7 +45,7 @@ public class DataUtil {
     try (PreparedStatement stmt = this.connection.prepareStatement(sql)) {
       stmt.setString(1, lotName);
       ResultSet rs = stmt.executeQuery();
-      while(rs.next()) {
+      while (rs.next()) {
         tableName = rs.getString(1);
       }
     } catch (SQLException e) {
@@ -60,8 +60,8 @@ public class DataUtil {
     try (PreparedStatement stmt = this.connection.prepareStatement(sql)) {
       stmt.setInt(1, position);
       ResultSet rs = stmt.executeQuery();
-      while(rs.next()) {
-       result = rs.getString(1);
+      while (rs.next()) {
+        result = rs.getString(1);
       }
     } catch (SQLException e) {
       e.printStackTrace();
@@ -82,7 +82,7 @@ public class DataUtil {
     }
   }
 
-  public void deleteData(String lotName , int position) {
+  public void deleteData(String lotName, int position) {
     String table = getTableName(lotName);
     String sql = String.format("DELETE FROM %s WHERE id = ?", table);
     try (PreparedStatement stmt = this.connection.prepareStatement(sql)) {
@@ -97,13 +97,35 @@ public class DataUtil {
     }
   }
 
+  /**
+   * Truncate table for a parking lot when initing application.
+   *
+   * @param lotName is the abbreviation for parking lot, should be "A" or "B".
+   */
+  public void truncateAll(String lotName) {
+    String table = getTableName(lotName);
+    String sql = String.format("DELETE FROM %s", table);
+    try (PreparedStatement stmt = this.connection.prepareStatement(sql)) {
+      int deletedRows = stmt.executeUpdate();
+      System.out.println(deletedRows + " rows have been all deleted");
+    } catch (SQLException e) {
+      e.printStackTrace();
+    }
+  }
+
+  /**
+   * get table size for different parking lots.
+   *
+   * @param a is parking lot abbreviation, should be "A" or "B"
+   * @return the size
+   */
   public int getSize(String a) {
     int size = 0;
     String sql = "SELECT lot_size FROM parking_lots_management WHERE lot_id = ?";
     try (PreparedStatement stmt = this.connection.prepareStatement(sql)) {
       stmt.setString(1, a);
       ResultSet rs = stmt.executeQuery();
-      while(rs.next()) {
+      while (rs.next()) {
         size = rs.getInt("lot_size");
       }
     } catch (SQLException e) {
@@ -112,7 +134,9 @@ public class DataUtil {
     return size;
   }
 
-
+  /**
+   * Set size when initializing application.
+   */
   public void setSize(String a, int numA) {
     String sql = "UPDATE parking_lots_management SET lot_size = ? WHERE lot_id = ?";
     try (PreparedStatement stmt = this.connection.prepareStatement(sql)) {
@@ -125,33 +149,12 @@ public class DataUtil {
     }
   }
 
+
   public void closeConnection() {
-    try {this.connection.close();} catch (SQLException e) {
-      System.out.println(e.getMessage());
-    }
-  }
-
-  public static void main(String[] args) throws SQLException {
-    DataUtil con = new DataUtil();
-    String result = con.queryData("parking_lot_A", 1);
-    System.out.println(result);
-    con.insertData("A", 2, "A001");
-//    con.deleteData("A", 3);
-    System.out.println("parkinglotB size is " + con.getSize("B"));
-    System.out.println(con.queryAll("A"));
-    con.truncateAllData("A");
-    con.closeConnection();
-  }
-
-
-  public void truncateAllData(String lotName) {
-    String table = getTableName(lotName);
-    String sql = String.format("DELETE FROM %s", table);
-    try (PreparedStatement stmt = this.connection.prepareStatement(sql)) {
-     int deletedRows = stmt.executeUpdate();
-      System.out.println(deletedRows + " rows have been all deleted");
+    try {
+      this.connection.close();
     } catch (SQLException e) {
-      e.printStackTrace();
+      System.out.println(e.getMessage());
     }
   }
 }

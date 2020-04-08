@@ -1,7 +1,7 @@
 package entity;
 
 //car has a plate
-// car can have a ticket for parking: aTicket = parkingLot.produceNextTicket(car), car.setTicket(aTicket)
+// car can have a ticket for parking
 
 public class Car {
   private String plate;
@@ -17,10 +17,6 @@ public class Car {
 
   public void setTicket(Ticket t) {
     this.ticket = t;
-  }
-
-  public void usedTicket() {
-    this.ticket = null;
   }
 
   @Override

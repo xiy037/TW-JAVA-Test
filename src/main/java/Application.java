@@ -3,6 +3,8 @@ import entity.Ticket;
 import exception.InvalidTicketException;
 import exception.ParkingLotFullException;
 
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.Scanner;
 
 public class Application {
@@ -60,21 +62,20 @@ public class Application {
 
   public static void init(String initInfo) {
     String[] initInfoArr = initInfo.split(",");
-    int numA = Integer.parseInt(initInfoArr[0].split(":")[1]);
-    int numB = Integer.parseInt(initInfoArr[1].split(":")[1]);
-    parkRepo = new ParkRepository(numA, numB);
+    HashMap<String, Integer> nums = new HashMap<>();
+    for (String info: initInfoArr) {
+      String name = info.split(":")[0];
+      Integer number = Integer.parseInt(info.split(":")[1]);
+      nums.put(name, number);
+    }
+    parkRepo = new ParkRepository(nums);
   }
 
   public static String park(String carNumber) {
     Car newCar = new Car(carNumber);
     parkRepo.produceTicketForCar(newCar);
     Ticket ticket = newCar.getTicket();
-    if (ticket == null) {
-      return "";
-    } else {
-      return ticket.toString();
-    }
-
+    return ticket.toString();
   }
 
   public static String fetch(String ticket) {
